@@ -8,8 +8,8 @@ const field = process.argv[3] || 'events';
 if (!partFile) { console.error('usage: node scripts/replace_field.js <part.js> [field]'); process.exit(1); }
 global.window = {};
 require(path.resolve(process.cwd(), partFile));
-const NEW = global.window.NEW_DATA;
-if (!NEW) { console.error('part file did not set window.NEW_DATA'); process.exit(1); }
+const NEW = global.window[field === 'accidents' ? 'NEW_ACCIDENTS' : 'NEW_EVENTS'];
+if (!NEW) { console.error('part file did not set window.NEW_EVENTS / NEW_ACCIDENTS'); process.exit(1); }
 let S = fs.readFileSync('js/variant-detail.js', 'utf8');
 let count = 0, miss = [];
 for (const key of Object.keys(NEW)) {

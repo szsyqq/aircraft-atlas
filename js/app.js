@@ -678,6 +678,17 @@
       if (!arr || !arr.length) return '';
       return arr.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("");
     };
+    // 可展开组件：每条事件/事故渲染为 <details>，summary 为标题 t，展开为详情 d
+    var expandListHtml = function (arr) {
+      if (!arr || !arr.length) return '';
+      return '<ul class="v-list v-expand-list">' + arr.map(function (it) {
+        if (typeof it === 'string') {
+          return '<li><details class="vexpand"><summary>事件详情</summary><div class="vexpand-d">' + esc(it) + '</div></details></li>';
+        }
+        var t = it.t || '详情', d = it.d || '';
+        return '<li><details class="vexpand"><summary>' + esc(t) + '</summary><div class="vexpand-d">' + esc(d) + '</div></details></li>';
+      }).join('') + '</ul>';
+    };
     var upgradeHtml = rich.upgrade
       ? '<div class="v-block v-upgrade"><h4>相比上一代升级了什么</h4><ul class="v-list">' + listHtml(rich.upgrade) + '</ul></div>'
       : '';
@@ -685,10 +696,10 @@
       ? '<div class="v-block v-feat"><h4>标志性特点</h4><ul class="v-list">' + listHtml(rich.features) + '</ul></div>'
       : '';
     var eventsHtml = rich.events
-      ? '<div class="v-block v-events"><h4>著名历史事件 / 趣闻</h4><ul class="v-list">' + listHtml(rich.events) + '</ul></div>'
+      ? '<div class="v-block v-events"><h4>著名历史事件 / 趣闻</h4>' + expandListHtml(rich.events) + '</div>'
       : '';
     var accidentsHtml = (rich.accidents && rich.accidents.length)
-      ? '<div class="v-block v-acc"><h4>重大事故记录（' + rich.accidents.length + ' 起）</h4><ul class="v-list v-acc-list">' + listHtml(rich.accidents) + '</ul></div>'
+      ? '<div class="v-block v-acc"><h4>重大事故记录（' + rich.accidents.length + ' 起）</h4>' + expandListHtml(rich.accidents) + '</div>'
       : '';
 
     // 系谱选项卡：技术演进脉络叙述（前身 → 本机 → 后续衍生）

@@ -1050,6 +1050,20 @@ a.ln:hover { border-color: var(--accent); color: #fff; background: #101a2e; }
 .v-acc-list li { padding-left: 18px; }
 .v-acc-list li::before { content: "⚠"; left: 0; color: #ff7b6e; font-weight: 700; }
 
+/* 可展开事件 / 事故组件 */
+.v-expand-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.vexpand { border: 1px solid var(--border-2); border-radius: 10px; background: rgba(13,20,34,.45); overflow: hidden; }
+.vexpand > summary { cursor: pointer; list-style: none; padding: 11px 14px; font-size: 14px; font-weight: 600; color: #e7eefc; display: flex; align-items: center; gap: 9px; user-select: none; }
+.vexpand > summary::-webkit-details-marker { display: none; }
+.vexpand > summary::before { content: "▸"; color: var(--accent); font-size: 12px; line-height: 1; transition: transform .2s ease; }
+.vexpand[open] > summary::before { transform: rotate(90deg); }
+.vexpand[open] > summary { border-bottom: 1px solid var(--border-2); }
+.vexpand-d { padding: 11px 14px 13px; font-size: 13.5px; line-height: 1.75; color: #cdd7e6; }
+.v-acc .vexpand { border-color: rgba(255,123,110,.38); background: rgba(40,16,14,.4); }
+.v-acc .vexpand > summary { color: #ffd9d3; }
+.v-acc .vexpand > summary::before { color: #ff7b6e; }
+.v-acc .vexpand-d { color: #e9c9c4; }
+
 /* 快速识别页 · 配图卡片（v1.15 新增：识别无配图修复） */
 .v-idcard { display: flex; gap: 14px; align-items: center; margin: 0 0 16px; padding: 12px;
   border: 1px solid var(--border-2); border-radius: 12px; background: rgba(13,20,34,.5); }
