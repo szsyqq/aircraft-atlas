@@ -1,0 +1,38 @@
+{
+  "b737": {
+    "src": "assets/sil/b737.svg",
+    "title": "File:Boeing 737-800 silhouette.svg"
+  },
+  "b747": {
+    "src": "assets/sil/b747.svg",
+    "title": "File:Boeing 747 ISS silhouette.svg"
+  },
+  "b777": {
+    "src": "assets/sil/b777.svg",
+    "title": "File:Boeing 777-200LR silhouette.svg"
+  },
+  "b787": {
+    "src": "assets/sil/b787.svg",
+    "title": "File:Boeing 787-8 silhouette.svg"
+  },
+  "a380": {
+    "src": "assets/sil/a380.svg",
+    "title": "File:Airbus A380 silhouette.svg"
+  },
+  "a320": {
+    "src": "assets/sil/a320.svg",
+    "title": "File:Airbus A320 clipart.svg"
+  },
+  "a330": {
+    "src": "assets/sil/a330.svg",
+    "title": "File:LINEAR A SIGN A330.svg"
+  },
+  "a350": {
+    "src": "assets/sil/a350.svg",
+    "title": "File:LINEAR A SIGN A350.svg"
+  },
+  "c919": {
+    "src": "assets/sil/c919.svg",
+    "title": "File:UniC919 IBMPlexSansKR-SmBld.svg"
+  }
+}

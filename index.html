@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>飞机图鉴 · Aircraft Atlas</title>
+  <meta name="description" content="波音 / 空客 / 中国商飞主力机型图鉴：真实照片、快速识别、历史衍生与机型对比。" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="accent-bar"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="飞机图鉴首页">
+      <span class="brand-mark">✈</span>
+      <span class="brand-text">
+        <strong>飞机图鉴</strong>
+        <em>AIRCRAFT ATLAS</em>
+      </span>
+    </a>
+
+    <nav class="mainnav" id="mainnav">
+      <a href="#/" data-route="home">机队</a>
+      <a href="#/guide" data-route="guide">识别导读</a>
+      <a href="#/quiz" data-route="quiz">识别练习</a>
+      <a href="#/compare" data-route="compare">机型对比</a>
+    </nav>
+
+    <div class="ops">
+      <div class="ops-clock" id="opsClock" role="button" tabindex="0"
+           aria-haspopup="true" aria-expanded="false" title="点击切换时区">
+        <span class="ops-clock-time"><span id="clk">--:--:--</span></span>
+        <span class="ops-clock-zone" id="clkZone">北京</span>
+        <span class="ops-clock-caret">▾</span>
+        <ul class="tz-menu" id="tzMenu" role="menu">
+          <li role="menuitem" data-tz="utc">UTC · 协调世界时</li>
+          <li role="menuitem" data-tz="bj">北京 · UTC+8</li>
+          <li role="menuitem" data-tz="local">本地时区</li>
+        </ul>
+      </div>
+      <button class="ops-ver" id="opsVer" type="button"
+              aria-haspopup="dialog" title="升级日志">
+        <span class="ops-ver-tag" id="verTag">v1.4.0</span>
+        <span class="ops-ver-caret">▾</span>
+      </button>
+      <div class="ops-status"><i class="dot"></i> FLEET ONLINE</div>
+    </div>
+  </header>
+
+  <div class="statusstrip" id="statusstrip"></div>
+
+  <main id="view" class="view"></main>
+
+  <footer class="foot">
+    <div>飞机图鉴 · Aircraft Atlas — 面向飞友与航空小白的识别图鉴。</div>
+    <div class="foot-src">机型照片来自 Wikimedia Commons（CC 授权），仅供学习交流。</div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/silhouettes.js"></script>
+  <script src="js/views.js"></script>
+  <script src="js/families.js"></script>
+  <script src="js/production.js"></script>
+  <script src="js/infleet.js"></script>
+  <script src="js/variants.js"></script>
+  <script src="js/variant-cards.js"></script>
+  <script src="js/variant-detail.js"></script>
+  <script src="js/variant-gallery.js"></script>
+  <script src="js/guide.js"></script>
+  <script src="js/changelog.js"></script>
+  <script src="js/gallery.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- 升级日志面板 -->
+  <div class="changelog-modal" id="changelogModal" aria-hidden="true">
+    <div class="changelog-backdrop" data-close></div>
+    <div class="changelog-panel" role="dialog" aria-modal="true" aria-label="升级日志">
+      <header class="changelog-head">
+        <div>
+          <h2>升级日志</h2>
+          <p id="changelogSub">飞机图鉴 · 历次版本升级详情</p>
+        </div>
+        <button class="changelog-close" type="button" data-close aria-label="关闭">✕</button>
+      </header>
+      <div class="changelog-body" id="changelogBody"></div>
+    </div>
+  </div>
+
+  <!-- 图库灯箱 -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lb-backdrop" data-lb-close></div>
+    <button class="lb-close" type="button" data-lb-close aria-label="关闭">✕</button>
+    <button class="lb-nav lb-prev" type="button" data-lb-prev aria-label="上一张">‹</button>
+    <figure class="lb-fig">
+      <div class="lb-imgwrap" id="lbImgWrap"></div>
+      <figcaption class="lb-cap" id="lbCap"></figcaption>
+    </figure>
+    <button class="lb-nav lb-next" type="button" data-lb-next aria-label="下一张">›</button>
+  </div>
+</body>
+</html>
