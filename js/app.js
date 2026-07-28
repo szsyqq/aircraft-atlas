@@ -490,8 +490,12 @@
         var cards = vs.map(function (v, i) { return variantCardHtml(v, a, i); }).join("");
         return '<div class="fam-block" style="--bc:' + b.accent + '">' +
           '<div class="fam-head">' +
-            '<h3><a href="#/a/' + a.id + '">' + esc((fam && fam.name) || a.name) + '</a></h3>' +
-            (fam && fam.overview ? '<p class="fam-ov-vc">' + esc(fam.overview) + '</p>' : '') +
+            '<div class="fam-head-main">' +
+              '<span class="fam-kicker">家族 / FAMILY</span>' +
+              '<h3><a href="#/a/' + a.id + '">' + esc((fam && fam.name) || a.name) + '</a></h3>' +
+              (fam && fam.overview ? '<p class="fam-ov-vc">' + esc(fam.overview) + '</p>' : '') +
+            '</div>' +
+            '<a class="btn ghost fam-entry" href="#/a/' + a.id + '">查看家族 →</a>' +
           '</div>' +
           '<div class="vc-grid">' + cards + '</div>' +
         '</div>';
