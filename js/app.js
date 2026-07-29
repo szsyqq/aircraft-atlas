@@ -673,6 +673,27 @@
     var quickHtml = quick.map(function (t, i) {
       return '<li><span class="n">' + (i + 1) + '</span><span>' + esc(t) + '</span></li>';
     }).join("");
+    // 识别术语小词典（通用，覆盖全机型；解决「分叉小翼/发动机」等术语不懂的问题）
+    var ID_GLOSSARY = [
+      { key: "cockpit", term: "驾驶舱舷窗", en: "Cockpit Window", desc: "驾驶舱侧窗最下沿：波音呈 V 形向下斜，空客近乎平直。白天最可靠的判据之一。" },
+      { key: "engine", term: "发动机短舱", en: "Nacelle", desc: "包裹发动机的外壳。737 因起落架矮，短舱下缘扁平贴地；多数空客为圆短舱自然垂于翼下。" },
+      { key: "winglet", term: "翼梢小翼", en: "Winglet", desc: "翼尖减阻装置。737NG 为融合式、MAX 为分叉式（上下分叉的「小叉子」）；A320neo 为垂直上翘的「鲨鳍小翼」；787/777 无直立小翼、翼尖斜削如刀（斜削翼尖）。" },
+      { key: "door", term: "客舱门", en: "Cabin Door", desc: "机身侧面登机门。门的数量与位置可辅助判断机型大小（如 737 每侧 2 门、777 每侧 4 门）。" },
+      { key: "tail", term: "尾翼 / APU", en: "Tail / APU", desc: "机尾辅助动力装置（APU）排气口：波音圆润饱满，空客截平如被削方。绕到机尾一眼可分。" },
+      { key: "strobe", term: "频闪灯", en: "Strobe", desc: "翼尖发光信号灯。波音闪一下、停顿循环；空客连闪两下、停顿循环（夜间/大雾最有效）。" }
+    ];
+    var ID_GLOSSARY_MAP = {}; ID_GLOSSARY.forEach(function (g) { ID_GLOSSARY_MAP[g.key] = g; });
+    function annoHotspot(label, key, x, y) {
+      var g = ID_GLOSSARY_MAP[key] || { desc: label };
+      return '<button class="anno-dot" type="button" style="left:' + x + ';top:' + y + '" data-anno="' + key + '" aria-label="' + label + '">' +
+        '<span class="anno-ring"></span>' +
+        '<span class="anno-pop"><b>' + label + '</b><span>' + esc(g.desc) + '</span></span></button>';
+    }
+    function glossaryHtml() {
+      return ID_GLOSSARY.map(function (g) {
+        return '<div class="gloss-item"><div class="g-term">' + g.term + ' <span class="g-en">' + g.en + '</span></div><div class="g-desc">' + esc(g.desc) + '</div></div>';
+      }).join("");
+    }
     // 引擎迭代：该型号专属（用户明确要求）
     var engineHtml = rich.engine
       ? '<div class="v-engine"><h4>引擎型号迭代</h4><p>' + esc(rich.engine) + '</p></div>'
@@ -697,7 +718,7 @@
       ? '<div class="v-block v-upgrade"><h4>相比上一代升级了什么</h4><ul class="v-list">' + listHtml(rich.upgrade) + '</ul></div>'
       : '';
     var featuresHtml = rich.features
-      ? '<div class="v-block v-feat"><h4>标志性特点</h4><ul class="v-list">' + listHtml(rich.features) + '</ul></div>'
+      ? '<div class="v-block v-feat"><h4>标志性特点</h4><div class="feat-chips">' + rich.features.map(function (f) { return '<span class="feat-chip">' + esc(f) + '</span>'; }).join("") + '</div></div>'
       : '';
     var eventsHtml = rich.events
       ? '<div class="v-block v-events"><h4>著名历史事件 / 趣闻</h4>' + expandListHtml(rich.events) + '</div>'
@@ -753,10 +774,21 @@
       '<div id="vpanel">' +
         '<div class="panel hidden" data-panel="id">' +
           '<div class="v-idcard">' +
-            '<img class="v-idphoto" src="' + vphoto + '" alt="' + esc(v.name) + ' 识别图" loading="lazy">' +
+            '<div class="idphoto-wrap">' +
+              '<img class="v-idphoto" src="' + vphoto + '" alt="' + esc(v.name) + ' 识别图" loading="lazy">' +
+              '<button class="id-anno-toggle" type="button" data-anno-toggle>🔍 显示特征标注</button>' +
+              '<div class="id-anno-layer">' +
+                annoHotspot("驾驶舱舷窗", "cockpit", "20%", "30%") +
+                annoHotspot("发动机短舱", "engine", "44%", "62%") +
+                annoHotspot("翼梢小翼", "winglet", "89%", "40%") +
+                annoHotspot("客舱门", "door", "58%", "50%") +
+                annoHotspot("尾翼 / APU", "tail", "91%", "19%") +
+              '</div>' +
+            '</div>' +
             '<div class="v-idmeta"><span class="v-idtag">机型识别图</span><p>' + esc(v.name) + ' · ' + esc(v.era || '') + '</p></div>' +
           '</div>' +
           '<ul class="checklist">' + quickHtml + '</ul>' +
+          '<div class="glossary"><h4>识别术语小词典</h4><p class="gloss-tip">点开上方「显示特征标注」可在图上查看各部位；下方解释常见术语。</p><div class="gloss-grid">' + glossaryHtml() + '</div></div>' +
         '</div>' +
         '<div class="panel hidden" data-panel="gal">' + renderGallery({ id: v.id }) + '</div>' +
         '<div class="panel hidden" data-panel="spec"><table class="spec-table"><tbody>' + specRows + '</tbody></table>' +
@@ -1130,6 +1162,25 @@
             p.classList.toggle("hidden", p.dataset.panel !== btn.dataset.tab);
           });
         });
+      });
+    });
+    // 识别图特征标注：开关 + 热点弹窗
+    var annoToggle = document.querySelector("[data-anno-toggle]");
+    if (annoToggle) {
+      annoToggle.addEventListener("click", function () {
+        var layer = document.querySelector(".id-anno-layer");
+        if (!layer) return;
+        var on = layer.classList.toggle("show");
+        annoToggle.classList.toggle("on", on);
+        annoToggle.textContent = on ? "✕ 隐藏特征标注" : "🔍 显示特征标注";
+      });
+    }
+    document.querySelectorAll(".anno-dot").forEach(function (dot) {
+      dot.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var wasOpen = dot.classList.contains("open");
+        document.querySelectorAll(".anno-dot.open").forEach(function (d) { d.classList.remove("open"); });
+        if (!wasOpen) dot.classList.add("open");
       });
     });
     // 测验选项
