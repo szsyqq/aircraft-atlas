@@ -694,57 +694,72 @@
         return '<div class="gloss-item"><div class="g-term">' + g.term + ' <span class="g-en">' + g.en + '</span></div><div class="g-desc">' + esc(g.desc) + '</div></div>';
       }).join("");
     }
+    // 术语释义表：正文保持专业表述不改写；术语以虚线下划线标注，悬停/点击弹出释义
+    var TERM_NOTES = {
+      "涵道比": "Bypass Ratio。涡扇发动机外涵道与内涵道气流流量之比，高涵道比意味着更低油耗与噪声",
+      "电传": "Fly-by-Wire。以电信号取代机械钢索传递操纵指令，飞控计算机介入并提供包线保护",
+      "ETOPS": "双发延程运行认证。允许双发客机在距备降机场一定飞行时间（如 180/330 分钟）的航路上运行",
+      "翼梢小翼": "Winglet。安装于翼尖的垂直翼面，用于削弱翼尖涡、降低诱导阻力",
+      "分叉小翼": "Split Scimitar / AT Winglet。上下双叉式翼梢小翼，737 MAX 的标志性翼尖设计",
+      "鲨鳍小翼": "Sharklet。空客对其翼梢小翼的命名，外形似鲨鱼背鳍",
+      "斜削翼尖": "Raked Wingtip。翼尖后掠斜削的减阻设计，787/777-300ER 等采用，替代直立小翼",
+      "整流罩": "Fairing。用于平滑气流、减小干扰阻力的流线型罩体",
+      "APU": "Auxiliary Power Unit，辅助动力装置。位于机尾，供地面电源、引气与主发动机启动",
+      "复合材料": "以碳纤维增强树脂为主的结构材料，比强度高于铝合金，787 机体占比约 50%",
+      "短舱": "Nacelle。包覆发动机的流线型舱体",
+      "MTOW": "Maximum Takeoff Weight，最大起飞重量",
+      "涡扇": "涡轮风扇发动机，现代干线客机的主流动力形式",
+      "构型": "飞机总体布局方案（机翼位置、发动机数量与挂载方式、尾翼形式等的组合）",
+      "展弦比": "翼展与平均气动弦长之比，高展弦比机翼诱导阻力更小、巡航效率更高",
+      "气动": "空气动力学（Aerodynamics）的简称"
+    };
+    var TERM_KEYS = Object.keys(TERM_NOTES).sort(function (x, y) { return y.length - x.length; });
+    var JARGON_RE = /涵道比|电传|ETOPS|整流罩|APU|复合材料|短舱|MTOW|构型|气动|展弦比|翼载|涡扇|配平|增压|静稳定/;
+    // 术语标注：文本先转义，再将首次出现的术语包成带释义的 <span class="term">（不改写原文）
+    function termify(text) {
+      if (!text) return "";
+      var base = esc(text);
+      var hits = [];
+      TERM_KEYS.forEach(function (term) {
+        var i = base.indexOf(term);
+        if (i >= 0) hits.push({ i: i, term: term });
+      });
+      hits.sort(function (x, y) { return y.i - x.i; }); // 从后往前插入，位置不漂移
+      var used = [];
+      hits.forEach(function (h) {
+        var end = h.i + h.term.length;
+        for (var k = 0; k < used.length; k++) { if (h.i < used[k].e && end > used[k].s) return; } // 跳过重叠
+        base = base.slice(0, h.i) +
+          '<span class="term" tabindex="0" data-td="' + esc(TERM_NOTES[h.term]) + '">' + h.term + '</span>' +
+          base.slice(end);
+        used.push({ s: h.i, e: end });
+      });
+      return base;
+    }
     // 引擎迭代：该型号专属（用户明确要求）
     var engineHtml = rich.engine
-      ? '<div class="v-engine"><h4>引擎型号迭代</h4><p>' + esc(rich.engine) + '</p></div>'
+      ? '<div class="v-engine"><h4>引擎型号迭代</h4><p>' + termify(rich.engine) + '</p></div>'
       : '';
     // 新增：相比上一代升级 / 标志性特点 / 著名事件 / 重大事故（用户明确要求精确到机型）
     var listHtml = function (arr) {
       if (!arr || !arr.length) return '';
-      return arr.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("");
+      return arr.map(function (t) { return '<li>' + termify(t) + '</li>'; }).join("");
     };
     // 可展开组件：每条事件/事故渲染为 <details>，summary 为标题 t，展开为详情 d
     var expandListHtml = function (arr) {
       if (!arr || !arr.length) return '';
       return '<ul class="v-list v-expand-list">' + arr.map(function (it) {
         if (typeof it === 'string') {
-          return '<li><details class="vexpand"><summary>事件详情</summary><div class="vexpand-d">' + esc(it) + '</div></details></li>';
+          return '<li><details class="vexpand"><summary>事件详情</summary><div class="vexpand-d">' + termify(it) + '</div></details></li>';
         }
         var t = it.t || '详情', d = it.d || '';
-        return '<li><details class="vexpand"><summary>' + esc(t) + '</summary><div class="vexpand-d">' + esc(d) + '</div></details></li>';
+        return '<li><details class="vexpand"><summary>' + esc(t) + '</summary><div class="vexpand-d">' + termify(d) + '</div></details></li>';
       }).join('') + '</ul>';
     };
     var upgradeHtml = rich.upgrade
       ? '<div class="v-block v-upgrade"><h4>相比上一代升级了什么</h4><ul class="v-list">' + listHtml(rich.upgrade) + '</ul></div>'
       : '';
-    // ===== 特点分层：通俗的重点特点前置到首屏信息表，较专业的并入「深入了解」 =====
-    var TERM_NOTES = {
-      "涵道比": "发动机外圈风扇气流与内芯气流之比，数值越高越省油、越安静",
-      "电传": "用电信号代替钢索传递操纵指令，由计算机辅助飞行员操纵",
-      "ETOPS": "双发客机远离备降机场飞行的安全认证，数值越大越能自由飞越洋航线",
-      "翼梢小翼": "翼尖上翘的小翼片，用来减小阻力、节省燃油",
-      "整流罩": "包在部件外面减小风阻的流线型外壳",
-      "APU": "装在机尾的辅助小发动机，供地面用电和启动主发动机",
-      "复合材料": "碳纤维等又轻又结实的新型材料",
-      "短舱": "包裹发动机的外壳",
-      "MTOW": "最大起飞重量"
-    };
-    var JARGON_RE = /涵道比|电传|ETOPS|整流罩|APU|复合材料|短舱|MTOW|构型|气动|展弦比|翼载|涡扇|配平|增压|静稳定/;
-    // 给文本中首次出现的术语补一句白话解释（最多 2 处，避免啰嗦）
-    function explainTech(text) {
-      if (!text) return text;
-      var out = text, added = 0;
-      Object.keys(TERM_NOTES).forEach(function (term) {
-        if (added >= 2) return;
-        var i = out.indexOf(term);
-        if (i < 0) return;
-        var after = out.slice(i + term.length);
-        if (after.charAt(0) === "（" || after.charAt(0) === "(") return; // 已有括注
-        out = out.slice(0, i + term.length) + "（" + TERM_NOTES[term] + "）" + after;
-        added++;
-      });
-      return out;
-    }
+    // ===== 特点分层：通俗的重点特点前置到首屏信息表，其余并入「深入了解」 =====
     var allFeats = rich.features || [];
     var keyFeats = [], deepFeats = [];
     allFeats.forEach(function (f) {
@@ -755,18 +770,16 @@
     var keyFeatRow = keyFeats.length
       ? '<tr><th>标志特点</th><td><ul class="kf-list">' + keyFeats.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul></td></tr>'
       : '';
-    // 合并章节：较专业的特点（附白话注释）+ 历史事件/趣闻，统一放一个框
+    // 合并章节：其余特点 + 历史事件/趣闻统一放一个框；术语带释义标注，不改写原文
     var deepFeatHtml = deepFeats.length
-      ? '<ul class="v-list v-deepfeat">' + deepFeats.map(function (f) { return '<li>' + esc(explainTech(f)) + '</li>'; }).join("") + '</ul>'
+      ? '<ul class="v-list v-deepfeat">' + deepFeats.map(function (f) { return '<li>' + termify(f) + '</li>'; }).join("") + '</ul>'
       : '';
-    var eventsExpand = rich.events ? expandListHtml(rich.events.map(function (it) {
-      if (typeof it === 'string') return explainTech(it);
-      return { t: it.t, d: explainTech(it.d) };
-    })) : '';
+    var eventsExpand = rich.events ? expandListHtml(rich.events) : '';
     var deepHtml = (deepFeatHtml || eventsExpand)
-      ? '<div class="v-block v-deep"><h4>深入了解 · 特点详解与历史趣闻</h4>' +
-        (deepFeatHtml ? '<p class="v-deep-sub">这些特点略偏专业，已附上白话解释：</p>' + deepFeatHtml : '') +
-        (eventsExpand ? (deepFeatHtml ? '<p class="v-deep-sub">相关历史事件与趣闻（点开看详情）：</p>' : '') + eventsExpand : '') +
+      ? '<div class="v-block v-deep"><h4>深入了解</h4>' +
+        '<p class="term-hint">带虚线下划线的术语，悬停或点击可查看释义。</p>' +
+        (deepFeatHtml ? '<h5 class="v-sub">特点详解</h5>' + deepFeatHtml : '') +
+        (eventsExpand ? '<h5 class="v-sub">历史事件与趣闻</h5>' + eventsExpand : '') +
         '</div>'
       : '';
     var accidentsHtml = (rich.accidents && rich.accidents.length)
@@ -842,7 +855,7 @@
           (prod !== "—" ? '<p class="v-note">产销为型号级近似值（≈），来源行业公开报道；标注"待核实"者以家族级兜底。</p>' : '') +
         '</div>' +
         '<div class="panel" data-panel="hist">' +
-          (introText ? '<p class="hist-lead">' + esc(explainTech(introText)) + '</p>' : '') +
+          (introText ? '<p class="hist-lead">' + termify(introText) + '</p>' : '') +
           deepHtml +
           accidentsHtml +
           (FAM ? '<h4>所属家族演进 · ' + esc(FAM.name) + ' 是怎么一代代改进的</h4>' +

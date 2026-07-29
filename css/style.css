@@ -1083,9 +1083,26 @@ a.ln:hover { border-color: var(--accent); color: #fff; background: #101a2e; }
 .kf-list { margin: 0; padding-left: 18px; }
 .kf-list li { font-size: 14px; line-height: 1.7; color: #dbe5f4; }
 
-/* 深入了解 · 特点详解与历史趣闻（合并章节） */
-.v-deep-sub { font-size: 13.5px; color: var(--muted); margin: 12px 0 8px; }
+/* 深入了解（合并章节） */
+.v-sub { font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--muted);
+  margin: 16px 0 8px; }
+.term-hint { font-size: 12.5px; color: var(--muted); margin: 2px 0 6px; opacity: .85; }
 .v-deepfeat li { font-size: 14px; line-height: 1.8; color: #cdd7e6; margin-bottom: 6px; }
+
+/* 术语释义：虚线下划线 + 悬停/聚焦弹出释义（正文保持专业表述不改写） */
+.term { position: relative; border-bottom: 1px dashed rgba(127,168,255,.65);
+  color: #dbe9ff; cursor: help; outline: none; }
+.term:hover, .term:focus { border-bottom-color: var(--accent); }
+.term:hover::after, .term:focus::after {
+  content: attr(data-td); position: absolute; left: 50%; bottom: calc(100% + 9px);
+  transform: translateX(-50%); width: 250px; max-width: 68vw;
+  background: #0b1120; border: 1px solid var(--border-2); border-radius: 10px;
+  padding: 9px 12px; font-size: 13px; line-height: 1.65; color: #cdd7e6;
+  white-space: normal; text-align: left; z-index: 9;
+  box-shadow: 0 10px 26px rgba(0,0,0,.55); }
+.term:hover::before, .term:focus::before {
+  content: ""; position: absolute; left: 50%; bottom: calc(100% + 4px);
+  transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--border-2); z-index: 9; }
 
 /* 快速识别图 · 特征标注热点 */
 .idphoto-wrap { position: relative; flex: 0 0 auto; }
