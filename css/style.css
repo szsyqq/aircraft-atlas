@@ -1079,6 +1079,17 @@ a.ln:hover { border-color: var(--accent); color: #fff; background: #101a2e; }
 .feat-chip { font-size: 14px; padding: 6px 13px; border-radius: 999px;
   background: rgba(52,192,138,.14); border: 1px solid rgba(52,192,138,.4); color: #bff0d8; line-height: 1.55; }
 
+/* 介绍之前 · 主要特点标签框（小框框，置于整体介绍之上） */
+.v-feattags { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;
+  padding: 14px 16px; margin-bottom: 18px; border-radius: 12px;
+  background: rgba(76,125,240,.08); border: 1px solid rgba(76,125,240,.28); }
+.vft-label { flex: 0 0 auto; font-size: 13px; font-weight: 700; color: #9fb8ff;
+  padding-top: 6px; letter-spacing: .04em; white-space: nowrap; }
+.vft-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.vft-tag { font-size: 13.5px; line-height: 1.6; padding: 5px 13px; border-radius: 999px;
+  background: rgba(52,192,138,.14); border: 1px solid rgba(52,192,138,.4); color: #bff0d8; }
+.vft-tag .term { color: inherit; }
+
 /* 首屏信息表 · 标志特点行 */
 .kf-list { margin: 0; padding-left: 18px; }
 .kf-list li { font-size: 14px; line-height: 1.7; color: #dbe5f4; }

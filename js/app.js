@@ -770,6 +770,12 @@
     var keyFeatRow = keyFeats.length
       ? '<tr><th>标志特点</th><td><ul class="kf-list">' + keyFeats.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul></td></tr>'
       : '';
+    // 标签框：主要特点以 tag 形式放在「介绍与历史」开头、整体介绍之前（呼应旧版小框框，但定位前移）
+    var featTagBoxHtml = keyFeats.length
+      ? '<div class="v-feattags"><span class="vft-label">主要特点</span><div class="vft-tags">' +
+        keyFeats.map(function (f) { return '<span class="vft-tag">' + termify(f) + '</span>'; }).join("") +
+        '</div></div>'
+      : '';
     // 合并章节：其余特点 + 历史事件/趣闻统一放一个框；术语带释义标注，不改写原文
     var deepFeatHtml = deepFeats.length
       ? '<ul class="v-list v-deepfeat">' + deepFeats.map(function (f) { return '<li>' + termify(f) + '</li>'; }).join("") + '</ul>'
@@ -855,6 +861,7 @@
           (prod !== "—" ? '<p class="v-note">产销为型号级近似值（≈），来源行业公开报道；标注"待核实"者以家族级兜底。</p>' : '') +
         '</div>' +
         '<div class="panel" data-panel="hist">' +
+          featTagBoxHtml +
           (introText ? '<p class="hist-lead">' + termify(introText) + '</p>' : '') +
           deepHtml +
           accidentsHtml +
