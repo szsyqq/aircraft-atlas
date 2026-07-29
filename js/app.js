@@ -717,11 +717,57 @@
     var upgradeHtml = rich.upgrade
       ? '<div class="v-block v-upgrade"><h4>相比上一代升级了什么</h4><ul class="v-list">' + listHtml(rich.upgrade) + '</ul></div>'
       : '';
-    var featuresHtml = rich.features
-      ? '<div class="v-block v-feat"><h4>标志性特点</h4><div class="feat-chips">' + rich.features.map(function (f) { return '<span class="feat-chip">' + esc(f) + '</span>'; }).join("") + '</div></div>'
+    // ===== 特点分层：通俗的重点特点前置到首屏信息表，较专业的并入「深入了解」 =====
+    var TERM_NOTES = {
+      "涵道比": "发动机外圈风扇气流与内芯气流之比，数值越高越省油、越安静",
+      "电传": "用电信号代替钢索传递操纵指令，由计算机辅助飞行员操纵",
+      "ETOPS": "双发客机远离备降机场飞行的安全认证，数值越大越能自由飞越洋航线",
+      "翼梢小翼": "翼尖上翘的小翼片，用来减小阻力、节省燃油",
+      "整流罩": "包在部件外面减小风阻的流线型外壳",
+      "APU": "装在机尾的辅助小发动机，供地面用电和启动主发动机",
+      "复合材料": "碳纤维等又轻又结实的新型材料",
+      "短舱": "包裹发动机的外壳",
+      "MTOW": "最大起飞重量"
+    };
+    var JARGON_RE = /涵道比|电传|ETOPS|整流罩|APU|复合材料|短舱|MTOW|构型|气动|展弦比|翼载|涡扇|配平|增压|静稳定/;
+    // 给文本中首次出现的术语补一句白话解释（最多 2 处，避免啰嗦）
+    function explainTech(text) {
+      if (!text) return text;
+      var out = text, added = 0;
+      Object.keys(TERM_NOTES).forEach(function (term) {
+        if (added >= 2) return;
+        var i = out.indexOf(term);
+        if (i < 0) return;
+        var after = out.slice(i + term.length);
+        if (after.charAt(0) === "（" || after.charAt(0) === "(") return; // 已有括注
+        out = out.slice(0, i + term.length) + "（" + TERM_NOTES[term] + "）" + after;
+        added++;
+      });
+      return out;
+    }
+    var allFeats = rich.features || [];
+    var keyFeats = [], deepFeats = [];
+    allFeats.forEach(function (f) {
+      if (keyFeats.length < 3 && !JARGON_RE.test(f) && f.length <= 30) keyFeats.push(f);
+      else deepFeats.push(f);
+    });
+    if (!keyFeats.length && allFeats.length) { keyFeats = allFeats.slice(0, 2); deepFeats = allFeats.slice(2); }
+    var keyFeatRow = keyFeats.length
+      ? '<tr><th>标志特点</th><td><ul class="kf-list">' + keyFeats.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul></td></tr>'
       : '';
-    var eventsHtml = rich.events
-      ? '<div class="v-block v-events"><h4>著名历史事件 / 趣闻</h4>' + expandListHtml(rich.events) + '</div>'
+    // 合并章节：较专业的特点（附白话注释）+ 历史事件/趣闻，统一放一个框
+    var deepFeatHtml = deepFeats.length
+      ? '<ul class="v-list v-deepfeat">' + deepFeats.map(function (f) { return '<li>' + esc(explainTech(f)) + '</li>'; }).join("") + '</ul>'
+      : '';
+    var eventsExpand = rich.events ? expandListHtml(rich.events.map(function (it) {
+      if (typeof it === 'string') return explainTech(it);
+      return { t: it.t, d: explainTech(it.d) };
+    })) : '';
+    var deepHtml = (deepFeatHtml || eventsExpand)
+      ? '<div class="v-block v-deep"><h4>深入了解 · 特点详解与历史趣闻</h4>' +
+        (deepFeatHtml ? '<p class="v-deep-sub">这些特点略偏专业，已附上白话解释：</p>' + deepFeatHtml : '') +
+        (eventsExpand ? (deepFeatHtml ? '<p class="v-deep-sub">相关历史事件与趣闻（点开看详情）：</p>' : '') + eventsExpand : '') +
+        '</div>'
       : '';
     var accidentsHtml = (rich.accidents && rich.accidents.length)
       ? '<div class="v-block v-acc"><h4>重大事故记录（' + rich.accidents.length + ' 起）</h4>' + expandListHtml(rich.accidents) + '</div>'
@@ -755,6 +801,7 @@
             '<tr><th>首飞</th><td>' + esc(v.year) + '</td></tr>' +
             prodHtml + infHtml +
             '<tr><th>事故记录</th><td>' + (accCount ? '<b class="acc-n">' + accCount + ' 起</b>（详情见「介绍与历史」）' : '无公开重大记录') + '</td></tr>' +
+            keyFeatRow +
           '</tbody></table>' +
           '<div class="detail-tools">' +
             '<button class="btn ' + (inCompare(a.id) ? "" : "primary") + '" data-cmp="' + a.id + '" aria-pressed="' + inCompare(a.id) + '">' +
@@ -795,9 +842,8 @@
           (prod !== "—" ? '<p class="v-note">产销为型号级近似值（≈），来源行业公开报道；标注"待核实"者以家族级兜底。</p>' : '') +
         '</div>' +
         '<div class="panel" data-panel="hist">' +
-          (introText ? '<p class="hist-lead">' + esc(introText) + '</p>' : '') +
-          featuresHtml +
-          eventsHtml +
+          (introText ? '<p class="hist-lead">' + esc(explainTech(introText)) + '</p>' : '') +
+          deepHtml +
           accidentsHtml +
           (FAM ? '<h4>所属家族演进 · ' + esc(FAM.name) + ' 是怎么一代代改进的</h4>' +
             '<p class="fam-ov-inline">' + esc(FAM.overview) + '</p>' + evolutionTimelineHtml(FAM) : '') +

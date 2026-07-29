@@ -1074,15 +1074,23 @@ a.ln:hover { border-color: var(--accent); color: #fff; background: #101a2e; }
 .v-idphoto { width: 132px; height: 88px; object-fit: cover; border-radius: 8px; flex: 0 0 auto;
   background: #0b1120; border: 1px solid var(--border-2); }
 
-/* 标志性特点 · 紧凑 chips（扫描友好，替代长列表） */
+/* 标志性特点 · chips（保留兼容） */
 .feat-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.feat-chip { font-size: 13px; padding: 5px 12px; border-radius: 999px;
-  background: rgba(52,192,138,.14); border: 1px solid rgba(52,192,138,.4); color: #bff0d8; line-height: 1.5; }
+.feat-chip { font-size: 14px; padding: 6px 13px; border-radius: 999px;
+  background: rgba(52,192,138,.14); border: 1px solid rgba(52,192,138,.4); color: #bff0d8; line-height: 1.55; }
+
+/* 首屏信息表 · 标志特点行 */
+.kf-list { margin: 0; padding-left: 18px; }
+.kf-list li { font-size: 14px; line-height: 1.7; color: #dbe5f4; }
+
+/* 深入了解 · 特点详解与历史趣闻（合并章节） */
+.v-deep-sub { font-size: 13.5px; color: var(--muted); margin: 12px 0 8px; }
+.v-deepfeat li { font-size: 14px; line-height: 1.8; color: #cdd7e6; margin-bottom: 6px; }
 
 /* 快速识别图 · 特征标注热点 */
 .idphoto-wrap { position: relative; flex: 0 0 auto; }
 .id-anno-toggle { position: absolute; left: 6px; bottom: 6px; z-index: 3;
-  font-size: 11px; padding: 4px 9px; border-radius: 999px; cursor: pointer;
+  font-size: 13px; padding: 5px 11px; border-radius: 999px; cursor: pointer;
   background: rgba(11,17,32,.82); border: 1px solid var(--border-2); color: #cdd7e6; }
 .id-anno-toggle:hover { border-color: var(--accent); color: #fff; }
 .id-anno-toggle.on { background: var(--accent); border-color: var(--accent); color: #06101f; font-weight: 600; }
@@ -1096,22 +1104,22 @@ a.ln:hover { border-color: var(--accent); color: #fff; background: #101a2e; }
 .anno-dot.open .anno-ring { background: #ffd54a; }
 .anno-pop { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
   width: 216px; background: #0b1120; border: 1px solid var(--border-2); border-radius: 10px;
-  padding: 10px 12px; font-size: 12.5px; color: #cdd7e6; line-height: 1.65; display: none; z-index: 6;
+  padding: 10px 12px; font-size: 13.5px; color: #cdd7e6; line-height: 1.7; display: none; z-index: 6;
   box-shadow: 0 10px 26px rgba(0,0,0,.55); text-align: left; }
 .anno-dot.open .anno-pop { display: block; }
-.anno-pop b { color: #ffd54a; display: block; margin-bottom: 4px; font-size: 13px; }
+.anno-pop b { color: #ffd54a; display: block; margin-bottom: 4px; font-size: 14px; }
 @keyframes annopulse { 0%,100% { box-shadow: 0 0 0 4px rgba(255,213,74,.16); } 50% { box-shadow: 0 0 0 7px rgba(255,213,74,.04); } }
 
 /* 识别术语小词典 */
 .glossary { margin-top: 18px; }
-.gloss-tip { font-size: 12px; color: var(--muted); margin: 2px 0 12px; }
+.gloss-tip { font-size: 13px; color: var(--muted); margin: 2px 0 12px; }
 .gloss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 10px; }
 .gloss-item { border: 1px solid var(--border-2); border-radius: 10px; padding: 10px 13px; background: rgba(13,20,34,.5); }
-.g-term { font-weight: 700; color: #e7eefc; font-size: 13.5px; margin-bottom: 5px; }
-.g-en { font-weight: 400; color: var(--muted); font-size: 11px; margin-left: 5px; }
-.g-desc { font-size: 12.5px; color: #cdd7e6; line-height: 1.65; }
+.g-term { font-weight: 700; color: #e7eefc; font-size: 14.5px; margin-bottom: 5px; }
+.g-en { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 5px; }
+.g-desc { font-size: 13.5px; color: #cdd7e6; line-height: 1.7; }
 .v-idmeta { display: flex; flex-direction: column; gap: 6px; }
-.v-idtag { align-self: flex-start; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+.v-idtag { align-self: flex-start; font-size: 12.5px; padding: 3px 10px; border-radius: 999px;
   background: rgba(76,125,240,.16); color: #7fa8ff; border: 1px solid rgba(76,125,240,.3); }
-.v-idmeta p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.v-idmeta p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.55; }
 @media (max-width: 560px) { .v-idcard { flex-direction: column; align-items: flex-start; } .v-idphoto { width: 100%; height: 160px; } }
