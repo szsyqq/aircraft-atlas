@@ -767,10 +767,7 @@
       else deepFeats.push(f);
     });
     if (!keyFeats.length && allFeats.length) { keyFeats = allFeats.slice(0, 2); deepFeats = allFeats.slice(2); }
-    var keyFeatRow = keyFeats.length
-      ? '<tr><th>标志特点</th><td><ul class="kf-list">' + keyFeats.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul></td></tr>'
-      : '';
-    // 标签框：主要特点以 tag 形式放在「介绍与历史」开头、整体介绍之前（呼应旧版小框框，但定位前移）
+    // 主要特点以 tag 形式放在「介绍与历史」开头、整体介绍之前（呼应旧版小框框，但定位前移，不再重复进首屏信息表）
     var featTagBoxHtml = keyFeats.length
       ? '<div class="v-feattags"><span class="vft-label">主要特点</span><div class="vft-tags">' +
         keyFeats.map(function (f) { return '<span class="vft-tag">' + termify(f) + '</span>'; }).join("") +
@@ -820,7 +817,6 @@
             '<tr><th>首飞</th><td>' + esc(v.year) + '</td></tr>' +
             prodHtml + infHtml +
             '<tr><th>事故记录</th><td>' + (accCount ? '<b class="acc-n">' + accCount + ' 起</b>（详情见「介绍与历史」）' : '无公开重大记录') + '</td></tr>' +
-            keyFeatRow +
           '</tbody></table>' +
           '<div class="detail-tools">' +
             '<button class="btn ' + (inCompare(a.id) ? "" : "primary") + '" data-cmp="' + a.id + '" aria-pressed="' + inCompare(a.id) + '">' +

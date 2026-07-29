@@ -1090,10 +1090,6 @@ a.ln:hover { border-color: var(--accent); color: #fff; background: #101a2e; }
   background: rgba(52,192,138,.14); border: 1px solid rgba(52,192,138,.4); color: #bff0d8; }
 .vft-tag .term { color: inherit; }
 
-/* 首屏信息表 · 标志特点行 */
-.kf-list { margin: 0; padding-left: 18px; }
-.kf-list li { font-size: 14px; line-height: 1.7; color: #dbe5f4; }
-
 /* 深入了解（合并章节） */
 .v-sub { font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--muted);
   margin: 16px 0 8px; }
